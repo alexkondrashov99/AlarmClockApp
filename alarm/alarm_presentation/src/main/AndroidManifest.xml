@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.poprigun4ik99.alarm_presentation">
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+
+    <application>
+        <activity
+            android:name=".flow.alarm.AlarmActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name=".flow.alarm.AlarmServiceActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:showForAllUsers="true" />
+
+        <activity
+            android:name=".flow.dashboard.AlarmDashboardActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+
+
+        <service
+            android:name=".flow.services.AlarmService"
+            android:enabled="true"
+            android:exported="true" />
+
+
+        <receiver android:name=".flow.broadcastreceivers.AlarmReceiver" />
+
+        <receiver
+            android:name=".flow.broadcastreceivers.RebootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+
+</manifest>
