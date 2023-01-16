@@ -3,6 +3,7 @@ package com.poprigun4ik99.alarm_presentation.koin
 import com.poprigun4ik99.domain.repositories.AlarmRepository
 import com.poprigun4ik99.alarm_data.repositories.AlarmRepositoryImplementation
 import com.poprigun4ik99.alarm_data.room.AppDataBase
+import com.poprigun4ik99.alarm_presentation.flow.delegation.alarmringtonedelegate.AlarmPlayerDelegateImplementation
 import com.poprigun4ik99.alarm_presentation.flow.delegation.alarmsetupdelegate.AlarmSetupDelegateImplementation
 import com.poprigun4ik99.alarm_presentation.flow.delegation.alarmringtonedelegate.AlarmRingtoneDelegateImplementation
 import com.poprigun4ik99.alarm_presentation.flow.delegation.notificationdelegate.NotificationDelegateImplementation
@@ -23,7 +24,8 @@ val appModule = module {
 
 
     factory<AlarmSetupDelegate> { AlarmSetupDelegateImplementation(androidContext())}
-    factory<AlarmRingtoneDelegate> { AlarmRingtoneDelegateImplementation(androidContext())}
+    //factory<AlarmRingtoneDelegate> { AlarmRingtoneDelegateImplementation(androidContext())}
+    factory<AlarmRingtoneDelegate> { AlarmPlayerDelegateImplementation(androidContext())}
     factory<NotificationDelegate> { NotificationDelegateImplementation(androidContext())}
 
     factory<AlarmRepository> { AlarmRepositoryImplementation(AppDataBase.getInstance(androidContext()).alarmDao) }

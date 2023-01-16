@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.poprigun4ik99.alarm_presentation.R
 import com.poprigun4ik99.alarm_presentation.flow.dashboard.AlarmDashboardViewModel.AlarmUiItem
 import com.poprigun4ik99.domain.model.AlarmRecord
+import com.poprigun4ik99.domain.toRegularDateString
 import com.poprigun4ik99.domain.toRegularTimeString
 
 class AlarmAdapter(
@@ -61,11 +62,14 @@ class AlarmAdapter(
     abstract inner class AlarmViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     inner class AlarmItemViewHolder(view: View) : AlarmViewHolder(view) {
+
         fun bind(alarmItem: AlarmUiItem.AlarmItem) {
             itemView.findViewById<TextView>(R.id.tvAlarmDescription).text =
                 alarmItem.alarmRecord.description
             itemView.findViewById<TextView>(R.id.tvAlarmTime).text =
                 alarmItem.alarmRecord.timeStamp.toRegularTimeString()
+            itemView.findViewById<TextView>(R.id.tvAlarmDate).text =
+                alarmItem.alarmRecord.timeStamp.toRegularDateString()
             itemView.findViewById<View>(R.id.vTop).isVisible = alarmItem.topDividerIsVisible
             itemView.findViewById<View>(R.id.vBottom).isVisible = alarmItem.bottomDividerIsVisible
             itemView.findViewById<ConstraintLayout>(R.id.clRoot).apply {

@@ -5,5 +5,5 @@ object Constants {
     const val NOTIFICATION_ALARM_DESCRIPTION = "SOME_DESCRIPTION_ALARM"
 
 
-    const val ALARM_DURATION = 5L
+    const val ALARM_DURATION = 20L
 }

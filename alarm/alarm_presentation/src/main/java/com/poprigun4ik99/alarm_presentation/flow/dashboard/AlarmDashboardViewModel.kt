@@ -23,9 +23,7 @@ class AlarmDashboardViewModel(
     val alarmRecordsLiveData = MutableLiveData<List<AlarmUiItem>>()
 
     init {
-        viewModelScope.launch {
-            removeOldAlarmUseCase.execute()
-        }
+        //clearPastAlarmsFromDatabase()
     }
 
     fun cancelAlarm(alarmId: Long) {
@@ -63,6 +61,12 @@ class AlarmDashboardViewModel(
         }
     }
 
+    private fun clearPastAlarmsFromDatabase() {
+        viewModelScope.launch {
+            removeOldAlarmUseCase.execute()
+        }
+    }
+
     sealed class AlarmUiItem {
         data class AlarmItem(
             val alarmRecord: AlarmRecord,
@@ -72,5 +76,4 @@ class AlarmDashboardViewModel(
 
         object AddNewAlarm : AlarmUiItem()
     }
-
 }

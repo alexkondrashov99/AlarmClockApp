@@ -1,0 +1,3 @@
+<resources>
+    <string name="hours_minutes">%02d:%02d</string>
+</resources>

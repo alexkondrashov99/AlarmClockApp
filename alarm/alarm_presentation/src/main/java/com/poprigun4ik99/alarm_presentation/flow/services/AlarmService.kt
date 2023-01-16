@@ -58,6 +58,7 @@ class AlarmService: Service(), KoinComponent {
 
         startForeground(alarmId, notification)
 
+        //alarmRingtoneDelegate.playAlarmRingtone()
         alarmRingtoneDelegate.playAlarmRingtone()
 
         cancelTimer = Timer()

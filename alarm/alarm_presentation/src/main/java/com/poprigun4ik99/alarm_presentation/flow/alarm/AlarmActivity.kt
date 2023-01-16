@@ -34,7 +34,8 @@ class AlarmActivity : AppCompatActivity() {
 
         turnScreenOnAndKeyguardOff()
 
-        alarmRingtoneDelegate?.playAlarmRingtone()
+        //alarmRingtoneDelegate?.playAlarmRingtone()
+        alarmRingtoneDelegate.playAlarmRingtone()
 
         findViewById<Button>(R.id.btStopAlarm).setOnClickListener {
             finishAlarm()

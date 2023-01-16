@@ -3,6 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android/AndroidStudioProjects/FreeAlarmClock/AlarmClockApp.git/alarm/alarm_presentation/src/main/res/drawable/bg_border.xml" value="0.308" />
+        <entry key="..\:/Android/AndroidStudioProjects/FreeAlarmClock/AlarmClockApp.git/alarm/alarm_presentation/src/main/res/layout/activity_alarm.xml" value="0.2552083333333333" />
+        <entry key="..\:/Android/AndroidStudioProjects/FreeAlarmClock/AlarmClockApp.git/alarm/alarm_presentation/src/main/res/layout/activity_alarm_setup.xml" value="0.4666666666666667" />
+        <entry key="..\:/Android/AndroidStudioProjects/FreeAlarmClock/AlarmClockApp.git/alarm/alarm_presentation/src/main/res/layout/activity_setup_alarm.xml" value="0.4" />
+        <entry key="..\:/Android/AndroidStudioProjects/FreeAlarmClock/AlarmClockApp.git/alarm/alarm_presentation/src/main/res/layout/item_add_alarm.xml" value="0.4666666666666667" />
+        <entry key="..\:/Android/AndroidStudioProjects/FreeAlarmClock/AlarmClockApp.git/alarm/alarm_presentation/src/main/res/layout/item_alarm.xml" value="0.4" />
+        <entry key="..\:/Android/AndroidStudioProjects/FreeAlarmClock/AlarmClockApp.git/alarm/alarm_presentation/src/main/res/layout/item_work_record.xml" value="0.4666666666666667" />
         <entry key="..\:/Android/AndroidStudioProjects/FreeAlarmClock/alarm/alarm_presentation/src/main/res/drawable/item_alarm_background.xml" value="0.308" />
         <entry key="..\:/Android/AndroidStudioProjects/FreeAlarmClock/alarm/alarm_presentation/src/main/res/layout/activity_setup_alarm.xml" value="0.4" />
         <entry key="..\:/Android/AndroidStudioProjects/FreeAlarmClock/alarm/alarm_presentation/src/main/res/layout/item_add_alarm.xml" value="0.4661458333333333" />
