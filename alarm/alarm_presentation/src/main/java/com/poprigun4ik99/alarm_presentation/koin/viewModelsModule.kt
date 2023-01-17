@@ -9,7 +9,7 @@ import org.koin.dsl.module
 
 val viewModels = module {
     viewModel {
-        AlarmDashboardViewModel(get(), get(), get(), get())
+        AlarmDashboardViewModel(get(), get())
     }
 
     viewModel {

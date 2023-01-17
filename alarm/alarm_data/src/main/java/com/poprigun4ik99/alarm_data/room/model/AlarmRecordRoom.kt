@@ -8,6 +8,6 @@ data class AlarmRecordRoom(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
     val timeStamp: Long,
-    val shouldVibrate: Boolean,
-    var description: String? = null
+    val isAlarmPassed: Boolean,
+    var description: String,
 )

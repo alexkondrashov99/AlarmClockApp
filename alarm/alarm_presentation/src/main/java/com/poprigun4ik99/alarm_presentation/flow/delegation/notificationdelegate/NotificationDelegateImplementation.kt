@@ -12,24 +12,23 @@ import androidx.core.content.ContextCompat
 import com.poprigun4ik99.alarm_presentation.flow.Constants
 import com.poprigun4ik99.alarm_presentation.flow.alarm.AlarmActivity
 import com.poprigun4ik99.domain.delegates.notificationdelegate.NotificationDelegate
-import com.poprigun4ik99.domain.delegates.notificationdelegate.NotificationDelegate.Companion.KEY_ALARM_NOTIFICATION_ID
 
 class NotificationDelegateImplementation(private val context: Context): NotificationDelegate {
 
-    private fun getFullScreenIntent(context: Context, alarmId: Int): PendingIntent {
+    private fun getFullScreenIntent(context: Context, alarmId: Long): PendingIntent {
         val intent = Intent(context, AlarmActivity::class.java)
-            .apply { putExtra(KEY_ALARM_NOTIFICATION_ID, alarmId) }
+            .apply { putExtra(Constants.KEY_ALARM_ID, alarmId) }
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE).apply {
 
         }
     }
 
-    override fun showNotificationWithFullScreenIntent(alarmId: Int) {
+    override fun showNotificationWithFullScreenIntent(alarmId: Long) {
         val piFinishAlarmActivity = PendingIntent.getBroadcast(
             context,
             0,
             Intent(AlarmActivity.INTENT_CLOSE_ALARM_ACTIVITY)
-                .apply { putExtra(KEY_ALARM_NOTIFICATION_ID, alarmId) },
+                .apply { putExtra(Constants.KEY_ALARM_ID, alarmId) },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -49,11 +48,11 @@ class NotificationDelegateImplementation(private val context: Context): Notifica
 
         buildChannel(context)
         val notification = builder.build()
-        notificationManager?.notify(alarmId, notification)
+        notificationManager?.notify(alarmId.hashCode(), notification)
     }
 
-    override fun removeNotification(alarmId: Int) {
-        context.getSystemService(NotificationManager::class.java)?.cancel(alarmId)
+    override fun removeNotification(alarmId: Long) {
+        context.getSystemService(NotificationManager::class.java)?.cancel(alarmId.hashCode())
     }
 
     private fun buildChannel(context: Context) {

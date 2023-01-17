@@ -43,6 +43,8 @@ dependencies {
 
     //Koin
     implementation 'io.insert-koin:koin-android:3.3.2'
+    implementation 'io.insert-koin:koin-androidx-workmanager:3.3.2'
+
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     // Koin for Tests

@@ -10,7 +10,7 @@ class CancelAlarmUseCase(
     suspend fun execute(alarmIds: List<Long>) {
         alarmRepository.deleteAlarmsRecordsByIds(alarmIds)
         alarmIds.forEach {
-            alarmSetupDelegate.cancelAlarm(it.hashCode())
+            alarmSetupDelegate.cancelAlarm(it)
         }
     }
 }

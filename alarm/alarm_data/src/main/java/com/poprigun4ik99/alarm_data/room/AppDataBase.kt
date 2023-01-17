@@ -11,7 +11,7 @@ import com.poprigun4ik99.alarm_data.room.model.AlarmRecordRoom
     entities = [
         AlarmRecordRoom::class
     ],
-    version = 4
+    version = 6
 )
 
 abstract class AppDataBase : RoomDatabase() {

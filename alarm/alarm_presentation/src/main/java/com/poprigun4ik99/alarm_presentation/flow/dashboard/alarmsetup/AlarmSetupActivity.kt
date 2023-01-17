@@ -92,7 +92,7 @@ class AlarmSetupActivity : AppCompatActivity() {
         val startTime = ZonedDateTime.now().toInstant().toEpochMilli()
         val endTime = ZonedDateTime.now().plusDays(AVAILABLE_ALARM_DAYS).toInstant().toEpochMilli()
 
-        val dateValidatorMin: CalendarConstraints.DateValidator = DateValidatorPointForward.from(startTime)
+        val dateValidatorMin: CalendarConstraints.DateValidator = DateValidatorPointForward.now()
         val dateValidatorMax: CalendarConstraints.DateValidator = DateValidatorPointBackward.before(endTime)
 
         val listValidators = ArrayList<CalendarConstraints.DateValidator>()

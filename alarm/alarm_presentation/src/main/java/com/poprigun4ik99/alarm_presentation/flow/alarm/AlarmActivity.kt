@@ -14,7 +14,6 @@ import com.poprigun4ik99.alarm_presentation.flow.turnScreenOffAndKeyguardOn
 import com.poprigun4ik99.alarm_presentation.flow.turnScreenOnAndKeyguardOff
 import com.poprigun4ik99.domain.delegates.alarmringtonedelegate.AlarmRingtoneDelegate
 import com.poprigun4ik99.domain.delegates.notificationdelegate.NotificationDelegate
-import com.poprigun4ik99.domain.delegates.notificationdelegate.NotificationDelegate.Companion.KEY_ALARM_NOTIFICATION_ID
 import org.koin.android.ext.android.get
 import java.lang.RuntimeException
 import java.util.*
@@ -68,8 +67,8 @@ class AlarmActivity : AppCompatActivity() {
 
     private fun finishAlarm() {
         Log.d("NOTI", "finish alarm")
-        val notificationId = intent.getIntExtra(KEY_ALARM_NOTIFICATION_ID, -1)
-        if (notificationId == -1 || notificationId == null) {
+        val notificationId = intent.getLongExtra(Constants.KEY_ALARM_ID, -1L)
+        if (notificationId == -1L || notificationId == null) {
             throw RuntimeException("notificationId id cannot be $notificationId")
         }
 

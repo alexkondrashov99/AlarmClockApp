@@ -8,6 +8,7 @@ import com.poprigun4ik99.domain.repositories.AlarmRepository
 import com.poprigun4ik99.domain.usecases.CancelAlarmUseCase
 import com.poprigun4ik99.domain.usecases.RemoveOldAlarmUseCase
 import com.poprigun4ik99.domain.usecases.SetupAlarmUseCase
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -15,16 +16,10 @@ import kotlinx.coroutines.launch
 
 class AlarmDashboardViewModel(
     private val alarmRepository: AlarmRepository,
-    private val setupAlarmUseCase: SetupAlarmUseCase,
-    private val removeOldAlarmUseCase: RemoveOldAlarmUseCase,
     private val cancelAlarmUseCase: CancelAlarmUseCase
 ) : ViewModel() {
 
     val alarmRecordsLiveData = MutableLiveData<List<AlarmUiItem>>()
-
-    init {
-        //clearPastAlarmsFromDatabase()
-    }
 
     fun cancelAlarm(alarmId: Long) {
         viewModelScope.launch {
@@ -32,17 +27,11 @@ class AlarmDashboardViewModel(
         }
     }
 
-    fun setupAlarm(time: Long) {
-        viewModelScope.launch {
-            setupAlarmUseCase.execute(time)
-        }
-    }
-
     fun observeAlarmRecords() {
         alarmRepository.observeAllAlarmRecords()
             .filterNotNull()
-            .onEach {
-                alarmRecordsLiveData.value = alarmsListToUiList(it)
+            .onEach { alarms ->
+                alarmRecordsLiveData.value = alarmsListToUiList(alarms.filter { it.isAlarmPassed.not() })
             }
             .launchIn(viewModelScope)
     }
@@ -58,12 +47,6 @@ class AlarmDashboardViewModel(
             AlarmUiItem.AddNewAlarm,
             ).apply {
             addAll(0, uiList)
-        }
-    }
-
-    private fun clearPastAlarmsFromDatabase() {
-        viewModelScope.launch {
-            removeOldAlarmUseCase.execute()
         }
     }
 

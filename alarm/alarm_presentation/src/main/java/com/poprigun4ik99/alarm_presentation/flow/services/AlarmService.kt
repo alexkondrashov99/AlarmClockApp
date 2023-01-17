@@ -13,8 +13,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.poprigun4ik99.alarm_presentation.flow.Constants
 import com.poprigun4ik99.alarm_presentation.flow.alarm.AlarmServiceActivity
-import com.poprigun4ik99.domain.delegates.alarmdelegate.AlarmSetupDelegate.Companion.KEY_ALARM_INTENT_ID
 import com.poprigun4ik99.domain.delegates.alarmringtonedelegate.AlarmRingtoneDelegate
+import com.poprigun4ik99.domain.dispatcher.DefaultDispatcherProvider
+import com.poprigun4ik99.domain.dispatcher.DispatcherProvider
+import com.poprigun4ik99.domain.repositories.AlarmRepository
+import kotlinx.coroutines.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.util.*
@@ -24,14 +27,46 @@ import java.util.concurrent.TimeUnit
 class AlarmService: Service(), KoinComponent {
 
     private val alarmRingtoneDelegate: AlarmRingtoneDelegate = get()
+    private val alarmRepository: AlarmRepository = get()
 
     var cancelTimer: Timer? = null
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(DefaultDispatcherProvider.main() + job)
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == ACTION_STOP_SERVICE) {
             stopSelf()
         }
 
+        val alarmId = intent?.getLongExtra(Constants.KEY_ALARM_ID, - 1L) ?: -1L
+
+        if (alarmId == -1L) {
+            stopSelf()
+        }
+
+        scope.launch {
+            val alarmRecord = alarmRepository.getAlarmById(alarmId)
+
+            buildServiceNotification(notificationId = alarmId.hashCode(), alarmRecord.description)
+
+            alarmRingtoneDelegate.playAlarmRingtone()
+            setupAlarmCancelTimer()
+        }
+
+        return START_NOT_STICKY
+    }
+
+    private fun setupAlarmCancelTimer() {
+        cancelTimer = Timer()
+        cancelTimer?.schedule(object : TimerTask() {
+            override fun run() {
+                stopSelf()
+            }
+        }, TimeUnit.SECONDS.toMillis(Constants.ALARM_DURATION))
+    }
+
+    private fun buildServiceNotification(notificationId: Int, description: String) {
         val notificationIntent = Intent(this, AlarmServiceActivity::class.java).apply {
             addFlags(FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS or FLAG_ACTIVITY_CLEAR_TOP)
         }
@@ -47,28 +82,14 @@ class AlarmService: Service(), KoinComponent {
 
         val notification = NotificationCompat.Builder(this, Constants.CHANNEL_ID_ALARM)
             .setContentTitle("ALARM!!!!")
-            .setContentText("Some alarm content text")
+            .setContentText(description)
             .setSmallIcon(android.R.drawable.sym_def_app_icon)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .addAction(android.R.drawable.ic_delete, "Stop", pStopSelf)
             .build()
 
-        val alarmId = intent?.getIntExtra(KEY_ALARM_INTENT_ID, - 1) ?: -1
-
-        startForeground(alarmId, notification)
-
-        //alarmRingtoneDelegate.playAlarmRingtone()
-        alarmRingtoneDelegate.playAlarmRingtone()
-
-        cancelTimer = Timer()
-        cancelTimer?.schedule(object : TimerTask() {
-            override fun run() {
-                stopSelf()
-            }
-        }, TimeUnit.SECONDS.toMillis(Constants.ALARM_DURATION))
-
-        return START_NOT_STICKY
+        startForeground(notificationId, notification)
     }
 
     private fun createChannel() {
@@ -92,6 +113,10 @@ class AlarmService: Service(), KoinComponent {
         alarmRingtoneDelegate.stopAlarmRingtone()
         cancelTimer?.cancel()
         closeServiceActivity()
+
+        if (job.isActive) {
+            job.cancel()
+        }
     }
 
     private fun closeServiceActivity() {

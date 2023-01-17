@@ -4,14 +4,15 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.poprigun4ik99.alarm_presentation.flow.Constants
 import com.poprigun4ik99.alarm_presentation.flow.broadcastreceivers.AlarmReceiver
 import com.poprigun4ik99.alarm_presentation.flow.dashboard.AlarmDashboardActivity
 import com.poprigun4ik99.domain.delegates.alarmdelegate.AlarmSetupDelegate
-import com.poprigun4ik99.domain.delegates.alarmdelegate.AlarmSetupDelegate.Companion.KEY_ALARM_INTENT_ID
+
 
 class AlarmSetupDelegateImplementation(private val context: Context) : AlarmSetupDelegate {
 
-    override fun setupAlarm(alarmId: Int, alarmTime: Long) {
+    override fun setupAlarm(alarmId: Long, alarmTime: Long) {
         cancelAlarm(alarmId)
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
@@ -25,7 +26,7 @@ class AlarmSetupDelegateImplementation(private val context: Context) : AlarmSetu
         }
     }
 
-    override fun cancelAlarm(alarmId: Int) {
+    override fun cancelAlarm(alarmId: Long) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         alarmManager?.let {
             alarmManager.cancel(
@@ -50,16 +51,16 @@ class AlarmSetupDelegateImplementation(private val context: Context) : AlarmSetu
 
     private fun getAlarmPendingIntent(
         context: Context,
-        alarmId: Int,
+        alarmId: Long,
     ): PendingIntent? {
         val receiverIntent =
             Intent(context, AlarmReceiver::class.java).apply {
-                putExtra(KEY_ALARM_INTENT_ID, alarmId)
+                putExtra(Constants.KEY_ALARM_ID, alarmId)
             }
 
         return PendingIntent.getBroadcast(
             context,
-            alarmId,
+            alarmId.hashCode(),
             receiverIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )

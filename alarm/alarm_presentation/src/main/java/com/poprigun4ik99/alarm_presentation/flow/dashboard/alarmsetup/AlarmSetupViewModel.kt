@@ -49,10 +49,10 @@ class AlarmSetupViewModel(
                 .withHour(hoursAndMinutes.hours)
                 .withMinute(hoursAndMinutes.minutes)
                 .withSecond(0)
-
-            if (zdtAlarm.isBefore(ZonedDateTime.now()).not()) {
+            if(true) {
+            //if (zdtAlarm.isBefore(ZonedDateTime.now()).not()) {
                 viewModelScope.launch {
-                    setupAlarmUseCase.execute(zdtAlarm.toInstant().toEpochMilli())
+                    setupAlarmUseCase.execute(zdtAlarm.toInstant().toEpochMilli(), description)
                     //setupAlarmUseCase.execute(System.currentTimeMillis() + 10 * 1000)
                     _navigateFinish.call()
                 }

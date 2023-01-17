@@ -10,91 +10,76 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.*
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.poprigun4ik99.alarm_presentation.R
 import com.poprigun4ik99.alarm_presentation.flow.broadcastreceivers.TestDozeReceiver
 import com.poprigun4ik99.alarm_presentation.flow.dashboard.alarmsetup.AlarmSetupActivity
+import com.poprigun4ik99.alarm_presentation.flow.workers.ClearOldAlarmsWorker
 import com.poprigun4ik99.domain.toRegularDateString
 import com.poprigun4ik99.domain.toRegularTimeString
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.time.*
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 
 
-class AlarmDashboardActivity: AppCompatActivity() {
+class AlarmDashboardActivity : AppCompatActivity() {
 
     private val viewModel: AlarmDashboardViewModel by viewModel()
 
     private val rvAlarms: RecyclerView by lazy { findViewById(R.id.rvAlarms) }
-    private val alarmAdapter: AlarmAdapter by lazy { AlarmAdapter(
-        onItemClick = {
-            //startActivity(Intent(this, AlarmSetupActivity::class.java))
-        },
-        onItemLongClick = {
-            viewModel.cancelAlarm(it.id)
-        },
-        onAddClick = {
-            startActivity(Intent(this, AlarmSetupActivity::class.java))
-            //onAddAlarmClick()
-        }
-    ) }
+    private val alarmAdapter: AlarmAdapter by lazy {
+        AlarmAdapter(
+            onItemClick = {
+                //startActivity(Intent(this, AlarmSetupActivity::class.java))
+            },
+            onItemLongClick = {
+                viewModel.cancelAlarm(it.id)
+            },
+            onAddClick = {
+                startActivity(Intent(this, AlarmSetupActivity::class.java))
+                //onAddAlarmClick()
+            }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm_dashboard)
-        findViewById<TextView>(R.id.tvUpcomingAlarm)?.apply {
-            text = this@AlarmDashboardActivity.getSystemService<AlarmManager>()?.nextAlarmClock?.triggerTime?.run {
-                toRegularDateString() + " " + toRegularTimeString()
-            } ?: "no alarms"
-        }
+        launchAlarmGarbageCollector()
         //checkPermissions()
 
         rvAlarms.adapter = alarmAdapter
+        observeViewModel()
+
+    }
+
+    private fun observeViewModel() {
         with(viewModel) {
             observeAlarmRecords()
             alarmRecordsLiveData.observe(this@AlarmDashboardActivity) {
                 alarmAdapter.submitList(it)
-//                val str = it.joinToString(separator = "\n") { alarmRecord ->
-//                    "$alarmRecord " + Instant.ofEpochMilli(alarmRecord.timeStamp)
-//                        .atZone(ZoneId.systemDefault())
-//                }
-//                tvAlarmInfo.text = str
+                displayNextAlarmTime()
             }
         }
-
     }
 
-    private fun onAddAlarmClick() {
-        val materialTimePicker = MaterialTimePicker.Builder()
-            .setTimeFormat(TimeFormat.CLOCK_24H)
-            .setHour(LocalDateTime.now().hour)
-            .setMinute(0)
-            .setTitleText("Pick time for alarm")
-            .build()
-
-        materialTimePicker.addOnPositiveButtonClickListener {
-            val time = ZonedDateTime.of(
-                ZonedDateTime.now().year,
-                ZonedDateTime.now().monthValue,
-                ZonedDateTime.now().dayOfMonth,
-                materialTimePicker.hour,
-                materialTimePicker.minute,
-                0,
-                0,
-                ZoneId.systemDefault()
-            )
-            viewModel.setupAlarm(time.toInstant().toEpochMilli())
-            //viewModel.setupAlarm(System.currentTimeMillis() + 1000 * 5)
+    private fun displayNextAlarmTime() {
+        findViewById<TextView>(R.id.tvUpcomingAlarm)?.apply {
+            text =
+                this@AlarmDashboardActivity.getSystemService<AlarmManager>()?.nextAlarmClock?.triggerTime?.run {
+                    toRegularDateString() + " " + toRegularTimeString()
+                } ?: "no alarms"
         }
-        materialTimePicker.show(supportFragmentManager, "tag_picker");
     }
 
     private fun checkAndroid12Permission() {
@@ -141,6 +126,30 @@ class AlarmDashboardActivity: AppCompatActivity() {
                     startActivityForResult(overlaySettings, 1)
                 }
             }
+        }
+    }
+
+    private fun launchAlarmGarbageCollector() {
+
+        WorkManager.getInstance(application).let { manager ->
+            val constraints = Constraints.Builder()
+                .setRequiresDeviceIdle(true)
+                .build()
+
+            val workRequest = PeriodicWorkRequestBuilder<ClearOldAlarmsWorker>(
+                flexTimeInterval = Duration.ofMillis(
+                    PeriodicWorkRequest.MIN_PERIODIC_FLEX_MILLIS
+                ),
+                repeatInterval = Duration.ofHours(1)
+            )
+                .setConstraints(constraints)
+                .build()
+
+            manager.enqueueUniquePeriodicWork(
+                ClearOldAlarmsWorker.OLD_ALARMS_GARBAGE_COLLECTOR_TAG,
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+            )
         }
     }
 }

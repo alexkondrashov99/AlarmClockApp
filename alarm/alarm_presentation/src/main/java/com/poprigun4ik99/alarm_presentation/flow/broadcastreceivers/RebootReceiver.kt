@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter
 
 class RebootReceiver : BroadcastReceiver(), KoinComponent {
 
-    //private var alarmDelegate: AlarmDelegate? = null
     private val alarmSetupDelegate: AlarmSetupDelegate = get()
     private val alarmRepository: AlarmRepository = get()
 
@@ -26,22 +25,22 @@ class RebootReceiver : BroadcastReceiver(), KoinComponent {
 
             upcomingAlarms.forEach { alarm ->
                 alarmSetupDelegate.setupAlarm(
-                    alarmId = alarm.id.hashCode(),
+                    alarmId = alarm.id,
                     alarm.timeStamp
                 )
 
-                //TODO remove. it is for testing
-                alarmRepository.insertAlarmRecord(
-                    alarm.copy(
-                        description = "reboot setup ${
-                            ZonedDateTime.now().format(
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(
-                                    ZoneId.systemDefault()
-                                )
-                            )
-                        }"
-                    )
-                )
+//                //TODO remove. it is for testing
+//                alarmRepository.insertAlarmRecord(
+//                    alarm.copy(
+//                        description = "reboot setup ${
+//                            ZonedDateTime.now().format(
+//                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(
+//                                    ZoneId.systemDefault()
+//                                )
+//                            )
+//                        }"
+//                    )
+//                )
             }
         }
     }

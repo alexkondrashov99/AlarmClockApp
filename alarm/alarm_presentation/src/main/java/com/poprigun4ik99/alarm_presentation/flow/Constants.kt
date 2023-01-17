@@ -4,6 +4,7 @@ object Constants {
     const val NOTIFICATION_ALARM_CHANNEL_NAME = "TEST_ALARM"
     const val NOTIFICATION_ALARM_DESCRIPTION = "SOME_DESCRIPTION_ALARM"
 
+    const val KEY_ALARM_ID = "KEY_ALARM_ID"
 
     const val ALARM_DURATION = 20L
 }
