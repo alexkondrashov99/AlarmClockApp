@@ -10,8 +10,12 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.widget.TextView
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +26,7 @@ import com.poprigun4ik99.alarm_presentation.R
 import com.poprigun4ik99.alarm_presentation.flow.broadcastreceivers.TestDozeReceiver
 import com.poprigun4ik99.alarm_presentation.flow.dashboard.alarmsetup.AlarmSetupActivity
 import com.poprigun4ik99.alarm_presentation.flow.workers.ClearOldAlarmsWorker
+import com.poprigun4ik99.alarm_presentation.ui.theme.TestComposeAppTheme
 import com.poprigun4ik99.domain.toRegularDateString
 import com.poprigun4ik99.domain.toRegularTimeString
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -54,13 +59,29 @@ class AlarmDashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_alarm_dashboard)
-        launchAlarmGarbageCollector()
-        //checkPermissions()
+//        setContentView(R.layout.activity_alarm_dashboard)
+//        launchAlarmGarbageCollector()
+//        //checkPermissions()
+//
+//        rvAlarms.adapter = alarmAdapter
+//        observeViewModel()
+        setContent {
+            TestComposeAppTheme {
+                Greeting("Android")
+            }
+        }
+    }
+    @Composable
+    fun Greeting(name: String) {
+        Text(text = "Hello $name!")
+    }
 
-        rvAlarms.adapter = alarmAdapter
-        observeViewModel()
-
+    @Preview(showBackground = true)
+    @Composable
+    fun DefaultPreview() {
+        TestComposeAppTheme {
+            Greeting("Android")
+        }
     }
 
     private fun observeViewModel() {

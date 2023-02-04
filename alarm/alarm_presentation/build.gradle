@@ -7,6 +7,14 @@ plugins {
 android {
     compileSdk 33
 
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.0"
+    }
+
     defaultConfig {
         minSdk 26
         targetSdk 32
@@ -75,4 +83,10 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+
+    //compose
+    jcomposeImplementation "androidx.activity:activity-compose:$compose_activity_version"
+    jcomposeImplementation "androidx.compose.ui:ui:$compose_ui_version"
+    jcomposeImplementation "androidx.compose.ui:ui-tooling-preview:$compose_tooling_preview_version"
+    jcomposeImplementation "androidx.compose.material:material:$compose_material_version"
 }
