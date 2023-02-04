@@ -1,4 +1,4 @@
-package com.poprigun4ik99.alarm_presentation.koin
+package com.poprigun4ik99.alarm_di.koin
 
 import com.poprigun4ik99.alarm_presentation.flow.dashboard.AlarmDashboardViewModel
 import com.poprigun4ik99.alarm_presentation.flow.dashboard.alarmsetup.AlarmSetupViewModel

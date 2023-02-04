@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.poprigun4ik99.freealarmclock"
@@ -39,6 +39,7 @@ dependencies {
 
 
     implementation project(":alarm:alarm_presentation")
+    implementation project(":alarm:alarm_di")
 
 
     //Koin

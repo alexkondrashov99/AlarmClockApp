@@ -1,4 +1,4 @@
-package com.poprigun4ik99.alarm_presentation.koin
+package com.poprigun4ik99.alarm_di.koin
 
 import com.poprigun4ik99.alarm_data.repositories.AlarmRepositoryImplementation
 import com.poprigun4ik99.alarm_data.room.AppDataBase

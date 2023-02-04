@@ -2,8 +2,8 @@ package com.poprigun4ik99.freealarmclock
 
 import android.app.Application
 import android.util.Log
-import com.poprigun4ik99.alarm_presentation.koin.appModule
-import com.poprigun4ik99.alarm_presentation.koin.viewModels
+import com.poprigun4ik99.alarm_di.koin.appModule
+import com.poprigun4ik99.alarm_di.koin.viewModels
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.workmanager.koin.workManagerFactory
@@ -18,7 +18,10 @@ class AlarmApplication: Application(), KoinComponent {
             androidLogger()
             androidContext(this@AlarmApplication)
             workManagerFactory()
-            modules(appModule, viewModels)
+            modules(
+                appModule,
+                viewModels
+            )
         }
     }
 }
