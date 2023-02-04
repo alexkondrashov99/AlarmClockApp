@@ -45,7 +45,7 @@ class AlarmSetupDelegateImplementation(private val context: Context) : AlarmSetu
             context,
             0,
             alarmInfoIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 
@@ -62,7 +62,7 @@ class AlarmSetupDelegateImplementation(private val context: Context) : AlarmSetu
             context,
             alarmId.hashCode(),
             receiverIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 }
