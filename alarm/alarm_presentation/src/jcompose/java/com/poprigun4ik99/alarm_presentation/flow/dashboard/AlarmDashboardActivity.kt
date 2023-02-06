@@ -9,99 +9,60 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
-import android.widget.TextView
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
-import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
-import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.TimeFormat
-import com.poprigun4ik99.alarm_presentation.R
 import com.poprigun4ik99.alarm_presentation.flow.broadcastreceivers.TestDozeReceiver
 import com.poprigun4ik99.alarm_presentation.flow.dashboard.alarmsetup.AlarmSetupActivity
 import com.poprigun4ik99.alarm_presentation.flow.workers.ClearOldAlarmsWorker
-import com.poprigun4ik99.alarm_presentation.ui.theme.TestComposeAppTheme
-import com.poprigun4ik99.domain.toRegularDateString
-import com.poprigun4ik99.domain.toRegularTimeString
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.poprigun4ik99.alarm_presentation.ui.screen.view.AlarmDashboardScreen
+import com.poprigun4ik99.alarm_presentation.ui.theme.FreeAlarmClockAppTheme
 import java.time.Duration
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.util.*
 
 
 class AlarmDashboardActivity : AppCompatActivity() {
 
-    private val viewModel: AlarmDashboardViewModel by viewModel()
-
-    private val rvAlarms: RecyclerView by lazy { findViewById(R.id.rvAlarms) }
-    private val alarmAdapter: AlarmAdapter by lazy {
-        AlarmAdapter(
-            onItemClick = {
-                //startActivity(Intent(this, AlarmSetupActivity::class.java))
-            },
-            onItemLongClick = {
-                viewModel.cancelAlarm(it.id)
-            },
-            onAddClick = {
-                startActivity(Intent(this, AlarmSetupActivity::class.java))
-                //onAddAlarmClick()
-            }
-        )
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_alarm_dashboard)
-//        launchAlarmGarbageCollector()
-//        //checkPermissions()
-//
-//        rvAlarms.adapter = alarmAdapter
-//        observeViewModel()
+
+        launchAlarmGarbageCollector()
+
         setContent {
-            TestComposeAppTheme {
-                Greeting("Android")
+            FreeAlarmClockAppTheme {
+                AlarmDashboardScreen(
+                    //TODO make it through viewModel
+                    onNavigateAddNewAlarm = { startActivity(Intent(this, AlarmSetupActivity::class.java)) },
+                )
             }
         }
     }
-    @Composable
-    fun Greeting(name: String) {
-        Text(text = "Hello $name!")
-    }
+
+
 
     @Preview(showBackground = true)
     @Composable
     fun DefaultPreview() {
-        TestComposeAppTheme {
-            Greeting("Android")
+        FreeAlarmClockAppTheme {
+            AlarmDashboardScreen(
+                //TODO make it through viewModel
+                onNavigateAddNewAlarm = { startActivity(Intent(this, AlarmSetupActivity::class.java)) },
+            )
         }
     }
 
-    private fun observeViewModel() {
-        with(viewModel) {
-            observeAlarmRecords()
-            alarmRecordsLiveData.observe(this@AlarmDashboardActivity) {
-                alarmAdapter.submitList(it)
-                displayNextAlarmTime()
-            }
-        }
-    }
-
-    private fun displayNextAlarmTime() {
-        findViewById<TextView>(R.id.tvUpcomingAlarm)?.apply {
-            text =
-                this@AlarmDashboardActivity.getSystemService<AlarmManager>()?.nextAlarmClock?.triggerTime?.run {
-                    toRegularDateString() + " " + toRegularTimeString()
-                } ?: "no alarms"
-        }
-    }
+//    private fun displayNextAlarmTime() {
+//        findViewById<TextView>(R.id.tvUpcomingAlarm)?.apply {
+//            text =
+//                this@AlarmDashboardActivity.getSystemService<AlarmManager>()?.nextAlarmClock?.triggerTime?.run {
+//                    toRegularDateString() + " " + toRegularTimeString()
+//                } ?: "no alarms"
+//        }
+//    }
 
     private fun checkAndroid12Permission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -173,4 +134,5 @@ class AlarmDashboardActivity : AppCompatActivity() {
             )
         }
     }
+
 }

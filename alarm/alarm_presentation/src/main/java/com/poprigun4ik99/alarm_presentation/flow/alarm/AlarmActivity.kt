@@ -32,7 +32,6 @@ class AlarmActivity : AppCompatActivity() {
         setContentView(R.layout.activity_alarm)
 
         turnScreenOnAndKeyguardOff()
-
         //alarmRingtoneDelegate?.playAlarmRingtone()
         alarmRingtoneDelegate.playAlarmRingtone()
 
